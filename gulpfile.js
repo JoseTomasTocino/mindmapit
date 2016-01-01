@@ -37,28 +37,15 @@ gulp.task('html', function () {
 
 gulp.task('js', function () {
     browserify(sourceFolder + "/app.js", {debug: true})
-        //.add(require.resolve('babel/polyfill'))
         .transform(babelify)
         .bundle()
-        .on('error', util.log.bind(util, 'Browserify Error'))
         .pipe(source("app.js"))
-        .pipe(buffer())
-        //.pipe(sourcemaps.init({loadMaps: true}))
-        //.pipe(uglify({mangle: false}))
-        //.pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist'))
         .pipe(connect.reload())
     ;
-
-    //gulp.src(sourceFolder + '/app.js')
-    //    .pipe(babel())
-    //    .pipe(gulp.dest('./dist/'))
-    //    .pipe(connect.reload())
-    //;
 })
 
 gulp.task('watch', function () {
-    //livereload.listen();
     gulp.watch('index.html', ['html']);
     gulp.watch(sassFolder + '/**/*.scss', ['sass']);
     gulp.watch(sourceFolder + '/**/*.js', ['js']);
@@ -71,14 +58,4 @@ gulp.task('connect', function () {
     });
 });
 
-
-//gulp.task('webserver', function() {
-//    gulp.src('app')
-//        .pipe(webserver({
-//            livereload: true,
-//            directoryListing: true,
-//            open: true
-//        }));
-//});
-//
 gulp.task('default', ['connect', 'watch']);

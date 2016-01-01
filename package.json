@@ -25,7 +25,8 @@
     "gulp-watch": "^4.3.5",
     "gulp-webserver": "^0.9.1",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "yamljs": "^0.2.4"
   },
   "babel": {
     "presets": [
