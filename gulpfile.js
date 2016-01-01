@@ -13,6 +13,7 @@ var concat = require('gulp-concat');
 var webserver = require('gulp-webserver');
 var connect = require('gulp-connect');
 var babel = require('gulp-babel');
+var autoprefixer = require('gulp-autoprefixer');
 
 var sourceFolder = './src';
 var sassFolder = sourceFolder + '/scss';
@@ -21,6 +22,7 @@ var jsFolder = sourceFolder + '/js';
 gulp.task('sass', function () {
     gulp.src(sassFolder + '/**/*.scss')
         .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer())
         .pipe(concat('style.css'))
         .pipe(gulp.dest('./dist/'))
         .pipe(connect.reload())

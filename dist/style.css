@@ -361,8 +361,15 @@ html, body {
   margin: 0; }
 
 .wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
   height: 100%; }
 
 header {
@@ -377,17 +384,35 @@ header {
   font-size: 12px; }
 
 .content {
-  flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex; }
 
 #source {
   border-right: 4px solid #ddd;
-  flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  align-items: stretch;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
   background-color: #eeeeee; }
   #source textarea {
-    flex: 1;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
     font-family: "Ubuntu Mono", monospace;
     border: 0;
     padding: 5px;
@@ -395,5 +420,8 @@ header {
     outline: none; }
 
 #canvas_wrapper {
-  flex: 2.5;
+  -webkit-box-flex: 2.5;
+  -webkit-flex: 2.5;
+      -ms-flex: 2.5;
+          flex: 2.5;
   overflow: scroll; }
