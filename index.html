@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindMapIt</title>
+    <link rel="stylesheet" href="dist/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<div class="wrapper">
+    <header id="mainHeader">
+        <strong>MindMapIt</strong> - Developed by <a href="http://josetomastocino.com">José Tomás Tocino</a> -
+        <a href="https://github.com/JoseTomasTocino/MindMapIt">Source at GitHub</a>
+    </header>
+
+    <div class="info">
+        Write the source for your mind map using YAML in the text area on the left side. The result will appear
+        on the right. Right click the generated mind map to download it as an image.
+    </div>
+
+    <div class="content">
+        <div id="source">
+            <textarea class="source-textarea" v-model="sourceCode" debounce="500">
+
+            </textarea>
+        </div>
+        <div id="canvas_wrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.13/vue.js"></script>
+<script src="dist/app.js"></script>
+</body>
+</html>

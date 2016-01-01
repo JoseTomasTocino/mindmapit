@@ -1,0 +1,58 @@
+@import "vendor/normalize";
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  height: 50px;
+  padding: 0 10px;
+  line-height: 50px;
+  border-bottom: 2px solid #ddd;
+}
+
+.info {
+  border-bottom: 4px solid #ddd;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+}
+
+#source {
+  border-right: 4px solid #ddd;
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+
+  background-color: #eeeeee;
+
+  textarea {
+    flex: 1;
+    font-family: "Ubuntu Mono", monospace;
+
+    border: 0;
+    padding: 5px;
+    resize: none;
+
+    outline: none;
+  }
+}
+
+#canvas_wrapper {
+  flex: 2.5;
+  overflow: scroll;
+}
+
