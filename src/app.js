@@ -1,5 +1,6 @@
 import TreeNode from './js/TreeNode.js';
 import * as utils from './js/Util.js';
+import parseList from './js/Parser.js';
 
 var YAML = require('yamljs');
 
@@ -14,40 +15,30 @@ var vm = new Vue({
             console.log("Parsing...");
 
             try {
-                var parsed = YAML.parse(this.sourceCode);
+                //var parsed = YAML.parse(this.sourceCode);
+                var parsed = parseList(this.sourceCode);
             } catch (err) {
                 console.log("Woops! Error parsing");
+
                 return;
             }
 
 
             if (parsed.length == 0) return;
-            parsed = parsed[0];
+            parsed = parsed.children[0];
 
             vm.currentTree = this.parseObjectBranch(parsed, true);
             vm.regenerateDiagram();
         },
 
         parseObjectBranch: function (branch, isRoot = false) {
-            var branchName, branchContent;
-            for (var prop in branch) {
-                branchName = prop;
-                break;
-            }
+            var branchLabel = branch.label;
+            var branchChildren = branch.children;
 
-            branchContent = branch[branchName];
-            var node = new TreeNode(branchName, isRoot);
+            var node = new TreeNode(branchLabel, isRoot);
 
-            for (var child in branchContent) {
-                child = branchContent[child];
-
-                if (child instanceof Object) {
-                    node.addChild(this.parseObjectBranch(child, false));
-                }
-
-                else {
-                    node.addChild(new TreeNode(child));
-                }
+            for (var child of branchChildren) {
+                node.addChild(this.parseObjectBranch(child, false));
             }
 
             return node;
@@ -78,27 +69,34 @@ var vm = new Vue({
 //window.addEventListener('resize', vm.regenerateDiagram);
 
 vm.sourceCode =
-    `- Programming:
-  - Web Development:
-    - Front-end development:
-      - Languages:
+    `- Programming
+something I love
+  - Web Development
+    - Front-end development
+(stuff for the browsers)
+      - Languages
         - HTML
         - CSS
         - JavaScript
-      - Tools:
+      - Tools
         - Bootstrap
-    - Back-end development:
-      - Languages:
+    - Back-end development
+(stuff for the server)
+      - Languages
         - PHP
         - Python
-      - Frameworks:
+      - Frameworks
         - Django
         - Symphony
-  - Desktop development
-  - Mobile development:
+  - Desktop development,
+which is something pretty hard that
+most web developers can't do
+  - Mobile development
     - Android
     - iOS
-    - Some other stuff no one cares about
+    - Some other stuff
+no one cares about
+    - LOLWAT
 `;
 
 vm.$watch('sourceCode', function (sourceCode) {

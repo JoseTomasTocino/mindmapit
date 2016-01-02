@@ -17,6 +17,7 @@ export default class TreeNode {
 
     constructor(label, isRoot = false) {
         this.label = label;
+        this.labelLines = this.label.split("\n");
         this.isRoot = isRoot;
         this.parent = undefined;
         this.children = [];
@@ -55,15 +56,20 @@ export default class TreeNode {
         this.canvas = document.createElement("canvas");
         this.ctx = this.canvas.getContext("2d");
 
+        // The width of the label will be the width of the widest line
+        this.ctx.font = fontSize + "px " + fontFamily;
+        this.labelWidth = Math.ceil(Math.max(...this.labelLines.map(c => this.ctx.measureText(c).width)));
+
         if (this.isLeaf) {
-            this.ctx.font = fontSize + "px " + fontFamily;
-            this.labelWidth = this.ctx.measureText(this.label).width;
             this.canvas.width = this.labelWidth + labelPaddingRight * 2;
-            this.canvas.height = 2 * fontSize + leafMarginTop + leafMarginBottom;
+            this.canvas.height = fontSize * (this.labelLines.length + 1) + leafMarginTop + leafMarginBottom;
             this.ctx.font = fontSize + "px " + fontFamily;
-            this.ctx.fillText(this.label, 0, fontSize);
+            for (var i = 0; i < this.labelLines.length; i++) {
+                this.ctx.fillText(this.labelLines[i], 0, fontSize * (i + 1));
+            }
+
             // The anchorPoint defines where the line should start
-            this.anchorPoint = {x: 0, y: fontSize + labelPaddingBottom};
+            this.anchorPoint = {x: 0, y: (this.labelLines.length * fontSize) + labelPaddingBottom};
         }
 
         else {
@@ -87,13 +93,12 @@ export default class TreeNode {
             }
 
             // Compute left margin (label width + separation)
-            this.ctx.font = fontSize + "px " + fontFamily;
-            this.labelWidth = Math.ceil(this.ctx.measureText(this.label).width);
             var leftMargin = 10 + this.labelWidth + connectorWidth;
 
             // Set the width to the leftMargin plus the width of the widest child branch
             this.canvas.width = leftMargin + Math.max(...canvases.map(c => c.width));
             this.canvas.height = vertical_positions[canvases.length] + 5;
+            this.ctx.font = fontSize + "px " + fontFamily;
 
             if (this.isRoot) {
                 this.anchorPoint = {x: 10, y: this.canvas.height / 2 + fontSize / 2};
@@ -138,19 +143,27 @@ export default class TreeNode {
                 this.ctx.stroke();
             }
 
-            this.ctx.font = fontSize + "px " + fontFamily;
+
             if (this.isRoot) {
                 this.ctx.fillStyle = "#ffffff";
                 this.ctx.lineWidth = 3;
                 utils.roundRect(this.ctx,
-                    2, this.canvas.height / 2 - fontSize,
-                    this.labelWidth + 18, fontSize * 2.5,
+                    2, this.canvas.height / 2 - (this.labelLines.length) * fontSize,
+                    this.labelWidth + 18, fontSize * (this.labelLines.length + 1.5),
                     5, true, true);
             }
             this.ctx.fillStyle = "#000000";
-            this.ctx.fillText(this.label, 10, this.canvas.height / 2 + fontSize / 2);
-        }
 
+            for (var i = 0; i < this.labelLines.length; i++) {
+                this.ctx.fillText(
+                    this.labelLines[i],
+                    10,                                             // Fixed margin from the left
+                    this.canvas.height / 2                          // Vertical center
+                    + fontSize / 2                                  // Middle of the line height
+                    - fontSize * (this.labelLines.length - i - 1)   // Correctly account for multilines
+                );
+            }
+        }
 
         return this.canvas;
     }

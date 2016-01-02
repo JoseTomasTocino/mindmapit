@@ -15,13 +15,14 @@
     </header>
 
     <div class="info">
-        Write the source for your mind map using YAML in the text area on the left side. The result will appear
-        on the right. Right click the generated mind map to download it as an image.
+        Write the source for your mind map in the text area on the left side. The result will appear
+        on the right side. Right click the generated mind map to download it as an image.<br>
+        <strong>DISCLAIMER:</strong> no data gets sent from this website to any server, all the processing happens on the browser.
     </div>
 
     <div class="content">
         <div id="source">
-            <textarea class="source-textarea" v-model="sourceCode" debounce="500">
+            <textarea class="source-textarea" v-model="sourceCode" debounce="100">
 
             </textarea>
         </div>
