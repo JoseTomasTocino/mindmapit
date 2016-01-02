@@ -29,12 +29,9 @@ var vm = new Vue({
         },
 
         parseObjectBranch: function (branch, isRoot = false) {
-            var branchLabel = branch.label;
-            var branchChildren = branch.children;
+            var node = new TreeNode(branch.label, isRoot);
 
-            var node = new TreeNode(branchLabel, isRoot);
-
-            for (var child of branchChildren) {
+            for (var child of branch.children) {
                 node.addChild(this.parseObjectBranch(child, false));
             }
 
@@ -98,4 +95,4 @@ vm.$watch('sourceCode', function (sourceCode) {
     vm.parseSource();
 });
 
-vm.parseSource();
+setTimeout(() => vm.parseSource(), 250);
