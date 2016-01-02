@@ -20,7 +20,6 @@ var vm = new Vue({
                 return;
             }
 
-
             if (parsed.length == 0) return;
             parsed = parsed.children[0];
 
@@ -42,19 +41,19 @@ var vm = new Vue({
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
 
-            // Resize canvas to the available size
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-
             if (!(this.currentTree instanceof TreeNode)) {
                 console.log("Not a valid tree", this.currentTree);
                 return;
             }
 
+            // Draw the map
             var beautifulDrawing = this.currentTree.draw();
+
+            // Resize canvas to the size of the map plus some margin
             canvas.width = beautifulDrawing.width + 25;
             canvas.height = beautifulDrawing.height + 25;
 
+            // Draw the map onto the existing canvas
             ctx.drawImage(beautifulDrawing, 25, 25);
         }
     }
