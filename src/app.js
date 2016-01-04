@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import TreeNode from './js/TreeNode.js';
 import * as utils from './js/Util.js';
 import parseList from './js/Parser.js';
@@ -94,4 +95,5 @@ vm.$watch('sourceCode', function (sourceCode) {
     vm.parseSource();
 });
 
+// Small delay to allow for the font to load
 setTimeout(() => vm.parseSource(), 250);
