@@ -29,7 +29,7 @@ require('ion-rangeslider');
         sliderContainer.appendChild(field);
 
         // Configure the label
-        label.innerText = prop.label + ":";
+        label.textContent = prop.label + ":";
 
         // Configure the input
         input.setAttribute("v-model", "treeProperties." + propName);
