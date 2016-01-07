@@ -20,7 +20,7 @@ var sassFolder = sourceFolder + '/scss';
 var jsFolder = sourceFolder + '/js';
 
 gulp.task('sass', function () {
-    gulp.src(sassFolder + '/**/*.scss')
+    gulp.src('./src/scss/style.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())
         .pipe(concat('style.css'))
@@ -28,6 +28,11 @@ gulp.task('sass', function () {
         .pipe(connect.reload())
     ;
 });
+
+gulp.task('static', function() {
+    gulp.src('./src/img/**/*', { base: './src'})
+        .pipe(gulp.dest('dist'));
+})
 
 gulp.task('html', function () {
     gulp.src('index.html')
@@ -40,6 +45,8 @@ gulp.task('js', function () {
         .transform(babelify)
         .bundle()
         .pipe(source("app.js"))
+        //.pipe(buffer()) // Convert streaming vinyl to a buffer
+        //.pipe(concat('./src/js/vendor/*.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(connect.reload())
     ;

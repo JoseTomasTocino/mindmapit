@@ -51,7 +51,7 @@ export function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 }
 
 export function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 
@@ -64,8 +64,9 @@ function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-export function generateRandomColor(baseColor = [256, 256, 256]) {
+export function generateRandomColor(useGrayscale) {
 
+    var baseColor = [256, 256, 256];
     var red = getRandomInt(0, 256);
     var green = getRandomInt(0, 256);
     var blue = getRandomInt(0, 256);
@@ -78,15 +79,15 @@ export function generateRandomColor(baseColor = [256, 256, 256]) {
     green = Math.round(green * mixture + baseColor[1] * (1 - mixture));
     blue = Math.round(blue * mixture + baseColor[2] * (1 - mixture));
 
-    //
-    //red = Math.round((red + baseColor[0]) / 2);
-    //green = Math.round((green + baseColor[1]) / 2);
-    //blue = Math.round((blue + baseColor[2]) / 2);
-
-    return rgbToHex(red, green, blue);
+    if (useGrayscale.val == 1) {
+        return rgbToHex(red, red, red);
+    }
+    else {
+        return rgbToHex(red, green, blue);
+    }
 }
 
-export function getLoremIpsum (numWords=5) {
+export function getLoremIpsum(numWords = 5) {
     var baseText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus gravida eu leo vitae imperdiet. Nam pulvinar luctus arcu, vel semper ligula efficitur in. Mauris non semper ante. Nullam scelerisque hendrerit urna, lacinia egestas enim laoreet vitae. Aliquam erat volutpat. Duis posuere magna libero, vel rhoncus nisl ullamcorper eu. Etiam ac libero consectetur, congue nisi quis, vulputate erat.";
     var sentences = baseText.split(".");
     var sentences_words = sentences.map(s => s.split(/[\s\.,]/));
