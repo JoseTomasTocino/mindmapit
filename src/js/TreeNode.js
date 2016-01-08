@@ -6,6 +6,8 @@ var fontFamily = "Open Sans";
 var labelPaddingBottom = 8;
 var labelPaddingRight = 10;
 
+var DEBUG = false;
+
 export default class TreeNode {
 
     constructor(label, isRoot = false) {
@@ -40,7 +42,8 @@ export default class TreeNode {
         };
 
         var dr = function (x, y, w, h, c = "#00ff00") {
-            that.ctx.fillStyle = c;
+            that.ctx.lineWidth = 1;
+            that.ctx.strokeStyle = c;
             that.ctx.rect(x, y, w, h);
             that.ctx.stroke();
         };
@@ -50,18 +53,42 @@ export default class TreeNode {
 
         // The width of the label will be the width of the widest line
         this.ctx.font = treeProperties.fontSize.val + "px " + fontFamily;
+
+        // The height of the lines of text (only)
+        this.textHeight = treeProperties.fontSize.val * (this.labelLines.length);
+
+        // The height of the text + the separation from the line + the line height + the label margin
+        this.composedHeight = this.textHeight + labelPaddingBottom + treeProperties.connectorLineWidth.val;
+
+        // The composed height plus the margin
+        this.paddedHeight = this.composedHeight + treeProperties.nodeMarginTop.val;
+
+        this.labelHeight =
+            treeProperties.nodeMarginTop.val +                           // top margin
+            treeProperties.fontSize.val * (this.labelLines.length + 1) + // text lines' height
+            treeProperties.nodeMarginBottom.val                          // bottom margin
+        ;
+
         this.labelWidth = Math.ceil(Math.max(...this.labelLines.map(c => this.ctx.measureText(c).width)));
 
         if (this.isLeaf) {
+            // Resize the canvas
             this.canvas.width = this.labelWidth + labelPaddingRight * 2;
-            this.canvas.height = treeProperties.fontSize.val * (this.labelLines.length + 1) + treeProperties.leafMarginTop.val + treeProperties.leafMarginBottom.val;
+            this.canvas.height = this.labelHeight;
+
+            // Set the font
             this.ctx.font = treeProperties.fontSize.val + "px " + fontFamily;
+
+            // Draw the text lines
             for (var i = 0; i < this.labelLines.length; i++) {
-                this.ctx.fillText(this.labelLines[i], 0, treeProperties.fontSize.val * (i + 1));
+                this.ctx.fillText(this.labelLines[i], 0, treeProperties.fontSize.val * (i + 1) + treeProperties.nodeMarginTop.val);
             }
 
             // The anchorPoint defines where the line should start
-            this.anchorPoint = {x: 0, y: (this.labelLines.length * treeProperties.fontSize.val) + labelPaddingBottom};
+            this.anchorPoint = {
+                x: 0,
+                y: (this.labelLines.length * treeProperties.fontSize.val) + labelPaddingBottom + treeProperties.nodeMarginTop.val
+            };
         }
 
         else {
@@ -71,40 +98,55 @@ export default class TreeNode {
                 var canvases = this.children.map((c, i) => c.draw(branchColors[i]));
             }
 
-            // Otherwise, used the received branchColor
+            // Otherwise, use the received branchColor
             else {
                 var canvases = this.children.map((c, i) => c.draw(currentBranchColor));
             }
 
             // Get the vertical positions for the children
-            var vertical_positions = [0];
+            var childrenVerticalPositions = [0];
 
-            // Each position is the sum of the acummulated heights of the previous elements
+            // Each position is the sum of the acumulated heights of the previous elements
             for (var i = 0; i < canvases.length; i++) {
-                vertical_positions[i + 1] = vertical_positions[i] + canvases[i].height;
+                childrenVerticalPositions[i + 1] = childrenVerticalPositions[i] + canvases[i].height;
             }
+
+            let childrenHeight = childrenVerticalPositions[canvases.length];
+
+            this.anchorPoint = {x: this.isRoot ? 10 : 0, y: 0};
+
+            /*
+             If the height of the children is smaller than the height of the node, take the height of the node and
+             don't center it vertically.
+             Otherwise, take the max between 2*height of the node and the children height, and center it vertically.
+             */
+
+            if (childrenHeight < this.composedHeight + treeProperties.nodeMarginTop.val * 2) {
+                this.canvas.height = this.composedHeight + treeProperties.nodeMarginTop.val * 2;
+                this.anchorPoint.y = this.canvas.height / 2 + this.composedHeight / 2;
+            }
+            else {
+                this.canvas.height = Math.max(childrenVerticalPositions[canvases.length], this.composedHeight * 2);
+                this.anchorPoint.y = this.canvas.height / 2;
+            }
+
+            console.log(this.label, this.canvas.height, childrenVerticalPositions[canvases.length]);
 
             // Compute left margin (label width + separation)
             var leftMargin = 10 + this.labelWidth + treeProperties.connectorWidth.val;
 
             // Set the width to the leftMargin plus the width of the widest child branch
             this.canvas.width = leftMargin + Math.max(...canvases.map(c => c.width));
-            this.canvas.height = vertical_positions[canvases.length] + 5;
             this.ctx.font = treeProperties.fontSize.val + "px " + fontFamily;
 
-            if (this.isRoot) {
-                this.anchorPoint = {x: 10, y: this.canvas.height / 2 + treeProperties.fontSize.val / 2};
-            }
-            else {
-                this.anchorPoint = {x: 0, y: this.canvas.height / 2 + treeProperties.fontSize.val / 2 + labelPaddingBottom};
-            }
 
+            // Draw each child
             for (var i = 0; i < canvases.length; i++) {
                 if (this.isRoot) {
                     currentBranchColor = branchColors[i];
                 }
 
-                this.ctx.drawImage(canvases[i], leftMargin, vertical_positions[i]);
+                this.ctx.drawImage(canvases[i], leftMargin, childrenVerticalPositions[i]);
 
                 var connector_a = {
                     x: this.anchorPoint.x + this.labelWidth + labelPaddingRight,
@@ -113,7 +155,7 @@ export default class TreeNode {
 
                 var connector_b = {
                     x: leftMargin,
-                    y: vertical_positions[i] + this.children[i].anchorPoint.y
+                    y: childrenVerticalPositions[i] + this.children[i].anchorPoint.y
                 };
 
                 this.ctx.beginPath();
@@ -136,6 +178,7 @@ export default class TreeNode {
             }
 
 
+            // For the root node, print a containing rectangle and always center the text
             if (this.isRoot) {
                 this.ctx.fillStyle = "#ffffff";
                 this.ctx.lineWidth = 3;
@@ -143,19 +186,39 @@ export default class TreeNode {
                     2, this.canvas.height / 2 - (this.labelLines.length) * treeProperties.fontSize.val,
                     this.labelWidth + 18, treeProperties.fontSize.val * (this.labelLines.length + 1.5),
                     5, true, true);
-            }
-            this.ctx.fillStyle = "#000000";
 
-            for (var i = 0; i < this.labelLines.length; i++) {
-                this.ctx.fillText(
-                    this.labelLines[i],
-                    10,                                             // Fixed margin from the left
-                    this.canvas.height / 2                          // Vertical center
-                    + treeProperties.fontSize.val / 2                                  // Middle of the line height
-                    - treeProperties.fontSize.val * (this.labelLines.length - i - 1)   // Correctly account for multilines
-                );
+                this.ctx.fillStyle = "#000000";
+
+                for (var i = 0; i < this.labelLines.length; i++) {
+                    this.ctx.fillText(
+                        this.labelLines[i],
+                        10,                                             // Fixed margin from the left
+                        this.canvas.height / 2                          // Vertical center
+                        + treeProperties.fontSize.val / 2                                  // Middle of the line height
+                        - treeProperties.fontSize.val * (this.labelLines.length - i - 1)   // Correctly account for multilines
+                    );
+                }
+            }
+
+            else {
+                this.ctx.fillStyle = "#000000";
+
+                for (var i = 0; i < this.labelLines.length; i++) {
+                    this.ctx.fillText(
+                        this.labelLines[i],
+                        10,                                             // Fixed margin from the left
+                        this.anchorPoint.y     // From the anchor point
+                        - labelPaddingBottom   // Move up the padding
+                        - treeProperties.fontSize.val * (this.labelLines.length - i - 1)
+                    );
+                }
             }
         }
+
+        if (DEBUG) {
+            dr(1, 1, this.canvas.width - 1, this.canvas.height - 1);
+        }
+
 
         return this.canvas;
     }
