@@ -68,33 +68,3 @@ export default function parseList(text) {
 
     return items;
 }
-
-//var sourceCode =
-//`- Programming:
-//  - Web Development:
-//
-//    - Front-end development:
-//      - Languages:
-//        - HTML
-//        y penes
-//        y vaginas
-//        - CSS
-//        - JavaScript
-//      - Tools:
-//        - Bootstrap
-//    - Back-end development:
-//      - Languages:
-//        - PHP
-//        - Python
-//      - Frameworks:
-//        - Django
-//        - Symphony
-//  - Desktop development
-//  - Mobile development:
-//    - Android
-//    - iOS
-//    - Some other stuff no one cares about
-//`;
-//
-//
-//console.log(util.inspect(parseList(sourceCode), false, null, true));
