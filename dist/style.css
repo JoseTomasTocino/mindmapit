@@ -360,7 +360,8 @@ th {
 html, body {
   height: 100%;
   font-family: "Open sans";
-  margin: 0; }
+  margin: 0;
+  overflow: hidden; }
 
 .wrapper {
   display: -webkit-box;
@@ -375,13 +376,37 @@ html, body {
   height: 100%; }
 
 header {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+      -ms-flex: none;
+          flex: none;
   height: 50px;
   padding: 0 10px;
-  line-height: 50px;
   border-bottom: 2px solid #ddd; }
 
+h1 {
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+      -ms-flex: none;
+          flex: none;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: normal; }
+
 .info {
-  border-bottom: 4px solid #ddd;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  line-height: 1;
   padding: 10px;
   font-size: 12px; }
 
@@ -397,10 +422,10 @@ header {
 
 #source {
   border-right: 4px solid #ddd;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 350px;
+      -ms-flex: 0 0 350px;
+          flex: 0 0 350px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -414,6 +439,7 @@ header {
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch;
+  overflow: hidden;
   background-color: #eeeeee; }
   #source textarea {
     -webkit-box-flex: 1;
@@ -436,7 +462,14 @@ header {
 .sliders {
   padding: 10px;
   font-size: 12px;
-  border-bottom: 4px solid #ddd; }
+  border-bottom: 4px solid #ddd;
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+      -ms-flex: none;
+          flex: none; }
+  @media screen and (max-height: 600px) {
+    .sliders {
+      display: none; } }
 
 .field {
   display: -webkit-box;

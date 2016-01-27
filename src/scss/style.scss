@@ -6,6 +6,7 @@ html, body {
   height: 100%;
   font-family: "Open sans";
   margin: 0;
+  overflow: hidden;
 }
 
 .wrapper {
@@ -15,14 +16,25 @@ html, body {
 }
 
 header {
+  display: flex;
+  align-items: center;
+  flex: none;
   height: 50px;
   padding: 0 10px;
-  line-height: 50px;
   border-bottom: 2px solid #ddd;
 }
 
+h1 {
+  flex: none;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: normal;
+}
+
 .info {
-  border-bottom: 4px solid #ddd;
+  flex: 1;
+  line-height: 1;
+  //border-bottom: 4px solid #ddd;
   padding: 10px;
   font-size: 12px;
 }
@@ -34,10 +46,11 @@ header {
 
 #source {
   border-right: 4px solid #ddd;
-  flex: 1;
+  flex: 0 0 350px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
 
   background-color: #eeeeee;
 
@@ -62,7 +75,15 @@ header {
   padding: 10px;
   font-size: 12px;
   border-bottom: 4px solid #ddd;
+
+  flex: none;
+
+  @media screen and ( max-height: 600px ){
+    display: none;
+  }
 }
+
+
 
 .field {
   display: flex;
