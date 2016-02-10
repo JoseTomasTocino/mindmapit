@@ -16750,7 +16750,7 @@ var vm = new Vue({
                 return;
             }
 
-            if (parsed.length == 0) return;
+            if (parsed.children.length == 0) return;
             parsed = parsed.children[0];
 
             vm.currentTree = this.parseObjectBranch(parsed, true);
