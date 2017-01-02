@@ -36,7 +36,9 @@ require('ion-rangeslider');
         input.value = prop.val;
 
         if (prop.type && prop.type == "boolean") {
-            input.type = "checkbox"
+            input.type = "checkbox";
+        } else   if (prop.type && prop.type == "text") {
+            input.type = "text";
         } else {
             input.type = "text";
 
@@ -118,6 +120,20 @@ var vm = new Vue({
             if (parsed.children.length == 0) return;
             parsed = parsed.children[0];
 
+          
+            try {
+                if(treeProperties["textFilter"].val != "") {
+                    vm.textFilter = new RegExp(treeProperties["textFilter"].val);
+                } else {
+                    vm.textFilter = new RegExp(".+");
+                }
+            } catch (err) {
+                console.log(err);
+                return;
+            }
+
+
+            
             vm.currentTree = this.parseObjectBranch(parsed, true);
             vm.regenerateDiagram();
         },
@@ -126,7 +142,9 @@ var vm = new Vue({
             var node = new TreeNode(branch.label, isRoot);
 
             for (var child of branch.children) {
-                node.addChild(this.parseObjectBranch(child, false));
+                if(this.textFilter.test(child.label)) {
+                    node.addChild(this.parseObjectBranch(child, false));
+                }
             }
 
             return node;
@@ -156,9 +174,12 @@ var vm = new Vue({
 
         buildGlobalProperties: function () {
             for (var propName in treeProperties) {
-                treeProperties[propName].val = Number(this.treeProperties[propName]);
+                if("textFilter" != propName) {
+                    treeProperties[propName].val = Number(this.treeProperties[propName]);
+                } else {
+                    treeProperties[propName].val = this.treeProperties[propName];
+                }
             }
-
             this.parseSource();
         }
     },
